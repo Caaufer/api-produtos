@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Sistema de Produtos</title>
+</head>
+<body>
+
+  <h1>Cadastro de Produtos</h1>
+
+    
+    <input type="text" id="categoria" placeholder="Categoria">
+    <input type="number" id="estoque" placeholder="Estoque">
+
+
+  <input type="text" id="nome" placeholder="Nome do produto">
+  <input type="number" id="preco" placeholder="Preço">
+  <button onclick="adicionarProduto()">Adicionar</button>
+
+  <h2>Lista de Produtos</h2>
+  <ul id="lista"></ul>
+
+  <script>
+    async function adicionarProduto() {
+      const nome = document.getElementById('nome').value;
+const preco = document.getElementById('preco').value;
+const categoria = document.getElementById('categoria').value;
+const estoque = document.getElementById('estoque').value;
+
+await fetch('http://localhost:3000/produtos', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ nome, preco, categoria, estoque })
+});
+      
+
+      listarProdutos();
+    }
+
+    async function listarProdutos() {
+      const resposta = await fetch('http://localhost:3000/produtos');
+      const produtos = await resposta.json();
+
+      const lista = document.getElementById('lista');
+      lista.innerHTML = '';
+
+      produtos.forEach(p => {
+        const item = document.createElement('li');
+
+        item.innerHTML = `
+          
+          ${p.nome} - R$${p.preco} <br>
+          Categoria: ${p.categoria} | Estoque: ${p.estoque} 
+          <button onclick="deletarProduto(${p.id})">Excluir</button>
+          <br>
+        `;
+
+        lista.appendChild(item);
+      });
+    }
+
+    async function deletarProduto(id) {
+      await fetch(`http://localhost:3000/produtos/${id}`, {
+        method: 'DELETE'
+      });
+
+      listarProdutos();
+    }
+
+    listarProdutos();
+
+      
+
+    
+  </script>
+
+</body>
+</html>
