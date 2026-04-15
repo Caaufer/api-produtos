@@ -1,24 +1,99 @@
 <!DOCTYPE html>
-
 <html>
-<head>
-  <title>Sistema de Produtos</title>
-</head>
-<body>
 
-  <h1>Cadastro de Produtos</h1>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Mobile</title>
+
+  <style>
+
+    @media (max-width: 600px) {
+  input {
+    width: 100%;
+  }
+
+  .container {
+    padding: 10px;
+  }
+}
+
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      margin-top: 50px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #38bdf8;
+      color: black;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
 
     
-    <input type="text" id="categoria" placeholder="Categoria">
-    <input type="number" id="estoque" placeholder="Estoque">
+      .btn-delete {
+  background: #ef4444;
+  color: white;
+  margin-top: 10px;
+}
+    
 
+    li {
+  background: #1e293b;
+  margin: 15px auto;
+  padding: 15px;
+  border-radius: 12px;
+  list-style: none;
+  text-align: center;
+  width: 90%;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+  </style>
 
-  <input type="text" id="nome" placeholder="Nome do produto">
-  <input type="number" id="preco" placeholder="Preço">
-  <button onclick="adicionarProduto()">Adicionar</button>
+</head>
 
-  <h2>Lista de Produtos</h2>
-  <ul id="lista"></ul>
+<body>
+
+  <div class="container">
+
+    <h1>📱 Tech Mobile </h1>
+
+    <input type="text" id="nome" placeholder="Produto">
+<input type="number" id="preco" placeholder="Preço">
+<input type="text" id="categoria" placeholder="Categoria">
+<input type="number" id="estoque" placeholder="Estoque">
+
+    <br>
+
+    <button onclick="adicionarProduto()">Adicionar</button>
+
+    <h2>Produtos</h2>
+    <ul id="lista"></ul>
+
+  </div>
 
   <script>
     async function adicionarProduto() {
@@ -27,20 +102,20 @@ const preco = document.getElementById('preco').value;
 const categoria = document.getElementById('categoria').value;
 const estoque = document.getElementById('estoque').value;
 
-await fetch('http://localhost:3000/produtos', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ nome, preco, categoria, estoque })
+await fetch('https://api-produtos-j3wn.onrender.com/produtos', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nome, preco, categoria, estoque })
 });
-      
 
       listarProdutos();
+
+      document.getElementById('nome').value = '';
+      document.getElementById('preco').value = '';
     }
 
     async function listarProdutos() {
-      const resposta = await fetch('http://localhost:3000/produtos');
+      const resposta = await fetch('https://api-produtos-j3wn.onrender.com/produtos');
       const produtos = await resposta.json();
 
       const lista = document.getElementById('lista');
@@ -50,19 +125,19 @@ await fetch('http://localhost:3000/produtos', {
         const item = document.createElement('li');
 
         item.innerHTML = `
-          
-          ${p.nome} - R$${p.preco} <br>
-          Categoria: ${p.categoria} | Estoque: ${p.estoque} 
-          <button onclick="deletarProduto(${p.id})">Excluir</button>
-          <br>
-        `;
+  <strong>${p.nome}</strong> - R$${p.preco} <br>
+  Categoria: ${p.categoria} <br>
+  Estoque: ${p.estoque} <br>
 
+  <button onclick="editarProduto(${p.id})">Editar</button>
+  <button class="btn-delete" onclick="deletarProduto(${p.id})">Excluir</button>
+`;
         lista.appendChild(item);
       });
     }
 
     async function deletarProduto(id) {
-      await fetch(`http://localhost:3000/produtos/${id}`, {
+      await fetch(`https://api-produtos-j3wn.onrender.com/produtos/${id}`, {
         method: 'DELETE'
       });
 
@@ -70,11 +145,8 @@ await fetch('http://localhost:3000/produtos', {
     }
 
     listarProdutos();
-
-      
-
-    
   </script>
 
 </body>
+
 </html>
